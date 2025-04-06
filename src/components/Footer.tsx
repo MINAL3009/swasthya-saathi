@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -8,8 +7,8 @@ const Footer = () => {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div className="space-y-4">
             <Link to="/" className="flex items-center gap-2">
-              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-medical-blue text-white font-bold">MI</div>
-              <span className="text-xl font-bold text-medical-blue">MedInsight AI</span>
+              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-medical-blue text-white font-bold">SS</div>
+              <span className="text-xl font-bold text-medical-blue">Swasthya Saathi</span>
             </Link>
             <p className="text-sm text-gray-500">
               Connecting healthcare providers and patients with AI-powered insights for better outcomes.
@@ -72,7 +71,7 @@ const Footer = () => {
             <h3 className="mb-4 text-sm font-semibold uppercase text-gray-500">Contact</h3>
             <ul className="space-y-2 text-sm">
               <li className="text-gray-600">
-                Email: <a href="mailto:info@medinsight.ai" className="hover:text-medical-blue">info@medinsight.ai</a>
+                Email: <a href="mailto:info@swasthyasaathi.org" className="hover:text-medical-blue">info@swasthyasaathi.org</a>
               </li>
               <li className="text-gray-600">
                 Phone: <a href="tel:+11234567890" className="hover:text-medical-blue">+1 (123) 456-7890</a>
@@ -86,7 +85,7 @@ const Footer = () => {
         
         <div className="pt-8 mt-8 border-t border-gray-200">
           <p className="text-sm text-center text-gray-500">
-            © {new Date().getFullYear()} MedInsight AI. All rights reserved.
+            © {new Date().getFullYear()} Swasthya Saathi. All rights reserved.
           </p>
         </div>
       </div>
