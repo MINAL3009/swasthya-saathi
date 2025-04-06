@@ -1,225 +1,83 @@
 
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Calendar, Clock, FileText, MessageCircle, User, Users } from "lucide-react";
+import { useState, useEffect } from "react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import DoctorStatusIndicator from "@/components/DoctorStatusIndicator";
+import RecordUploader from "@/components/RecordUploader";
 
 const DoctorDashboard = () => {
-  const [activeTab, setActiveTab] = useState("overview");
+  const [isOnline, setIsOnline] = useState(true);
+  
+  useEffect(() => {
+    // Initialize online status
+    setIsOnline(navigator.onLine);
+    
+    // Check stored preference
+    const storedStatus = localStorage.getItem("doctorOnlineStatus");
+    if (storedStatus === "offline") {
+      setIsOnline(false);
+    }
+    
+    const handleOnlineStatusChange = () => {
+      setIsOnline(navigator.onLine);
+    };
+    
+    window.addEventListener("online", handleOnlineStatusChange);
+    window.addEventListener("offline", handleOnlineStatusChange);
+    
+    return () => {
+      window.removeEventListener("online", handleOnlineStatusChange);
+      window.removeEventListener("offline", handleOnlineStatusChange);
+    };
+  }, []);
   
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-medical-dark">Doctor Dashboard</h1>
-          <p className="text-gray-500">Welcome back, Dr. Johnson</p>
-        </div>
-        <div className="flex items-center gap-4">
-          <Button variant="outline" className="flex items-center gap-2">
-            <Calendar className="h-4 w-4" />
-            April 6, 2025
-          </Button>
-          <Button className="bg-medical-blue flex items-center gap-2">
-            <FileText className="h-4 w-4" />
-            New Patient
-          </Button>
-        </div>
-      </div>
+    <div className="flex flex-col min-h-screen">
+      <Navbar userRole="doctor" />
       
-      <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4 lg:w-1/2">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="patients">Patients</TabsTrigger>
-          <TabsTrigger value="appointments">Appointments</TabsTrigger>
-          <TabsTrigger value="reports">Reports</TabsTrigger>
-        </TabsList>
+      <main className="flex-1 container mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold text-medical-blue">Doctor Dashboard</h1>
+          <DoctorStatusIndicator />
+        </div>
         
-        <TabsContent value="overview" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <div className="w-12 h-12 rounded-full bg-medical-light flex items-center justify-center text-medical-blue">
-                    <Users className="h-6 w-6" />
-                  </div>
-                  <span className="text-sm font-semibold text-medical-blue">Today</span>
-                </div>
-                <h3 className="text-2xl font-bold">24</h3>
-                <p className="text-gray-500">Total Patients</p>
-              </CardContent>
-            </Card>
+        <div className="grid gap-6 md:grid-cols-3">
+          <div className="md:col-span-2 space-y-6">
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold mb-4">Recent Patient Activity</h2>
+              {/* Patient activity would go here */}
+              <p className="text-gray-500">No recent patient activity.</p>
+            </div>
             
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <div className="w-12 h-12 rounded-full bg-medical-light flex items-center justify-center text-medical-blue">
-                    <Calendar className="h-6 w-6" />
-                  </div>
-                  <span className="text-sm font-semibold text-medical-blue">Today</span>
-                </div>
-                <h3 className="text-2xl font-bold">8</h3>
-                <p className="text-gray-500">Appointments</p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <div className="w-12 h-12 rounded-full bg-medical-light flex items-center justify-center text-medical-blue">
-                    <FileText className="h-6 w-6" />
-                  </div>
-                  <span className="text-sm font-semibold text-medical-blue">This Week</span>
-                </div>
-                <h3 className="text-2xl font-bold">15</h3>
-                <p className="text-gray-500">Reports Analyzed</p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <div className="w-12 h-12 rounded-full bg-medical-light flex items-center justify-center text-medical-blue">
-                    <MessageCircle className="h-6 w-6" />
-                  </div>
-                  <span className="text-sm font-semibold text-medical-blue">Pending</span>
-                </div>
-                <h3 className="text-2xl font-bold">7</h3>
-                <p className="text-gray-500">Messages</p>
-              </CardContent>
-            </Card>
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold mb-4">Upcoming Appointments</h2>
+              {/* Appointments would go here */}
+              <p className="text-gray-500">No upcoming appointments.</p>
+            </div>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold mb-4">Today's Schedule</h3>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-4">
-                    <div className="mt-1 w-10 h-10 rounded-full bg-medical-light flex items-center justify-center text-medical-blue flex-shrink-0">
-                      <Clock className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="font-medium">9:00 AM - Sarah Williams</p>
-                      <p className="text-sm text-gray-500">Annual Check-up</p>
-                      <Progress value={75} className="h-2 mt-2" />
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-4">
-                    <div className="mt-1 w-10 h-10 rounded-full bg-medical-light flex items-center justify-center text-medical-blue flex-shrink-0">
-                      <Clock className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="font-medium">10:30 AM - James Rodriguez</p>
-                      <p className="text-sm text-gray-500">Follow-up Consultation</p>
-                      <Progress value={40} className="h-2 mt-2" />
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-4">
-                    <div className="mt-1 w-10 h-10 rounded-full bg-medical-light flex items-center justify-center text-medical-blue flex-shrink-0">
-                      <Clock className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="font-medium">2:00 PM - Lisa Chen</p>
-                      <p className="text-sm text-gray-500">Pre-surgery Assessment</p>
-                      <Progress value={10} className="h-2 mt-2" />
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          <div className="space-y-6">
+            <RecordUploader isOnline={isOnline} />
             
-            <Card className="lg:col-span-2">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold mb-4">Recent Patient Activity</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                    <div className="w-10 h-10 rounded-full bg-medical-blue flex items-center justify-center text-white flex-shrink-0">
-                      <User className="h-5 w-5" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between">
-                        <p className="font-medium">Robert Johnson</p>
-                        <span className="text-sm text-gray-500">10 mins ago</span>
-                      </div>
-                      <p className="text-sm text-gray-600">Updated blood pressure readings</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                    <div className="w-10 h-10 rounded-full bg-medical-blue flex items-center justify-center text-white flex-shrink-0">
-                      <User className="h-5 w-5" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between">
-                        <p className="font-medium">Emily Wilson</p>
-                        <span className="text-sm text-gray-500">2 hours ago</span>
-                      </div>
-                      <p className="text-sm text-gray-600">Requested prescription renewal</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                    <div className="w-10 h-10 rounded-full bg-medical-blue flex items-center justify-center text-white flex-shrink-0">
-                      <User className="h-5 w-5" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between">
-                        <p className="font-medium">Michael Lee</p>
-                        <span className="text-sm text-gray-500">Yesterday</span>
-                      </div>
-                      <p className="text-sm text-gray-600">Uploaded lab test results</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                    <div className="w-10 h-10 rounded-full bg-medical-blue flex items-center justify-center text-white flex-shrink-0">
-                      <User className="h-5 w-5" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between">
-                        <p className="font-medium">Sophia Garcia</p>
-                        <span className="text-sm text-gray-500">Yesterday</span>
-                      </div>
-                      <p className="text-sm text-gray-600">Scheduled a follow-up appointment</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold mb-4">Offline Mode</h2>
+              <p className="text-sm text-gray-600 mb-3">
+                When working offline, your data will be stored locally. Once you're back online, all data will be synchronized with the cloud automatically.
+              </p>
+              
+              <h3 className="text-lg font-medium mt-4 mb-2">Offline Features:</h3>
+              <ul className="text-sm text-gray-600 list-disc pl-5 space-y-1">
+                <li>View patient records (previously loaded)</li>
+                <li>Create new medical records</li>
+                <li>Update patient information</li>
+                <li>Write prescriptions</li>
+              </ul>
+            </div>
           </div>
-        </TabsContent>
-        
-        <TabsContent value="patients" className="space-y-4">
-          <Card>
-            <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Patient List</h2>
-              <p className="text-gray-500">Patient management interface would be displayed here.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="appointments" className="space-y-4">
-          <Card>
-            <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Appointment Calendar</h2>
-              <p className="text-gray-500">Calendar and appointment scheduling interface would be displayed here.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="reports" className="space-y-4">
-          <Card>
-            <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Medical Reports Analysis</h2>
-              <p className="text-gray-500">AI-powered medical report analysis tools would be displayed here.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+        </div>
+      </main>
+      
+      <Footer />
     </div>
   );
 };

@@ -1,6 +1,6 @@
 
-import { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,23 +10,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { toast } from "sonner";
-import { Mic, MicOff } from "lucide-react";
 
-const Login = () => {
+const Register = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
-  const [language, setLanguage] = useState("english");
   const [uid, setUid] = useState("");
-  const [defaultTab, setDefaultTab] = useState<"doctor" | "patient">("doctor");
   
-  useEffect(() => {
-    if (location.state?.role) {
-      setDefaultTab(location.state.role);
-    }
-  }, [location.state]);
-  
-  const handleLogin = (role: "doctor" | "patient") => {
+  const handleRegister = (role: "doctor" | "patient") => {
     setIsLoading(true);
     
     if (role === "doctor" && !uid) {
@@ -38,19 +28,8 @@ const Login = () => {
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
-      toast.success(`Logged in successfully as ${role}`);
-      
-      // Store the language preference and role in localStorage
-      localStorage.setItem("userLanguage", language);
-      localStorage.setItem("userRole", role);
-      
-      if (role === "doctor") {
-        // Store the online status for doctor
-        localStorage.setItem("doctorOnlineStatus", "online");
-        navigate("/dashboard");
-      } else {
-        navigate("/records");
-      }
+      toast.success(`Registered successfully as ${role}`);
+      navigate("/login");
     }, 1500);
   };
   
@@ -60,7 +39,7 @@ const Login = () => {
       
       <main className="flex-1 flex items-center justify-center py-12 bg-gray-50">
         <div className="w-full max-w-md px-4">
-          <Tabs defaultValue={defaultTab} className="w-full">
+          <Tabs defaultValue="doctor" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="doctor">Doctor</TabsTrigger>
               <TabsTrigger value="patient">Patient</TabsTrigger>
@@ -69,25 +48,51 @@ const Login = () => {
             <TabsContent value="doctor">
               <Card>
                 <CardHeader className="space-y-1">
-                  <CardTitle className="text-2xl text-center">Doctor Login</CardTitle>
+                  <CardTitle className="text-2xl text-center">Doctor Registration</CardTitle>
                   <CardDescription className="text-center">
-                    Enter your credentials to access your dashboard
+                    Create an account to access the doctor portal
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="doctor-first-name">First Name</Label>
+                      <Input id="doctor-first-name" placeholder="John" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="doctor-last-name">Last Name</Label>
+                      <Input id="doctor-last-name" placeholder="Doe" />
+                    </div>
+                  </div>
+                  
                   <div className="space-y-2">
                     <Label htmlFor="doctor-email">Email</Label>
                     <Input id="doctor-email" type="email" placeholder="doctor@example.com" />
                   </div>
+                  
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="doctor-password">Password</Label>
-                      <Link to="/forgot-password" className="text-xs text-medical-blue hover:underline">
-                        Forgot password?
-                      </Link>
-                    </div>
+                    <Label htmlFor="doctor-specialty">Specialty</Label>
+                    <Select>
+                      <SelectTrigger id="doctor-specialty">
+                        <SelectValue placeholder="Select specialty" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="cardiology">Cardiology</SelectItem>
+                        <SelectItem value="dermatology">Dermatology</SelectItem>
+                        <SelectItem value="neurology">Neurology</SelectItem>
+                        <SelectItem value="orthopedics">Orthopedics</SelectItem>
+                        <SelectItem value="pediatrics">Pediatrics</SelectItem>
+                        <SelectItem value="psychiatry">Psychiatry</SelectItem>
+                        <SelectItem value="general">General Practice</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="doctor-password">Password</Label>
                     <Input id="doctor-password" type="password" />
                   </div>
+                  
                   <div className="space-y-2">
                     <Label htmlFor="doctor-uid">Doctor UID (Required for verification)</Label>
                     <Input 
@@ -97,20 +102,23 @@ const Login = () => {
                       onChange={(e) => setUid(e.target.value)}
                       required
                     />
+                    <p className="text-xs text-gray-500">
+                      Your Doctor UID is provided by the medical board and is required for verification.
+                    </p>
                   </div>
                 </CardContent>
                 <CardFooter className="flex flex-col">
                   <Button 
                     className="w-full bg-medical-blue" 
-                    onClick={() => handleLogin("doctor")}
+                    onClick={() => handleRegister("doctor")}
                     disabled={isLoading}
                   >
-                    {isLoading ? "Logging in..." : "Login"}
+                    {isLoading ? "Registering..." : "Register"}
                   </Button>
                   <p className="mt-4 text-center text-sm text-gray-500">
-                    Don't have an account?{" "}
-                    <Link to="/register" className="text-medical-blue hover:underline">
-                      Register
+                    Already have an account?{" "}
+                    <Link to="/login" className="text-medical-blue hover:underline">
+                      Login
                     </Link>
                   </p>
                 </CardFooter>
@@ -120,31 +128,41 @@ const Login = () => {
             <TabsContent value="patient">
               <Card>
                 <CardHeader className="space-y-1">
-                  <CardTitle className="text-2xl text-center">Patient Login</CardTitle>
+                  <CardTitle className="text-2xl text-center">Patient Registration</CardTitle>
                   <CardDescription className="text-center">
-                    Enter your credentials to access your medical records
+                    Create an account to access your medical records
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="patient-first-name">First Name</Label>
+                      <Input id="patient-first-name" placeholder="John" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="patient-last-name">Last Name</Label>
+                      <Input id="patient-last-name" placeholder="Doe" />
+                    </div>
+                  </div>
+                  
                   <div className="space-y-2">
                     <Label htmlFor="patient-email">Email</Label>
                     <Input id="patient-email" type="email" placeholder="patient@example.com" />
                   </div>
+                  
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="patient-password">Password</Label>
-                      <Link to="/forgot-password" className="text-xs text-medical-blue hover:underline">
-                        Forgot password?
-                      </Link>
-                    </div>
+                    <Label htmlFor="patient-dob">Date of Birth</Label>
+                    <Input id="patient-dob" type="date" />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="patient-password">Password</Label>
                     <Input id="patient-password" type="password" />
                   </div>
+                  
                   <div className="space-y-2">
                     <Label htmlFor="language-select">Preferred Language</Label>
-                    <Select 
-                      value={language} 
-                      onValueChange={setLanguage}
-                    >
+                    <Select defaultValue="english">
                       <SelectTrigger id="language-select">
                         <SelectValue placeholder="Select Language" />
                       </SelectTrigger>
@@ -159,15 +177,15 @@ const Login = () => {
                 <CardFooter className="flex flex-col">
                   <Button 
                     className="w-full bg-medical-teal" 
-                    onClick={() => handleLogin("patient")}
+                    onClick={() => handleRegister("patient")}
                     disabled={isLoading}
                   >
-                    {isLoading ? "Logging in..." : "Login"}
+                    {isLoading ? "Registering..." : "Register"}
                   </Button>
                   <p className="mt-4 text-center text-sm text-gray-500">
-                    Don't have an account?{" "}
-                    <Link to="/register" className="text-medical-blue hover:underline">
-                      Register
+                    Already have an account?{" "}
+                    <Link to="/login" className="text-medical-blue hover:underline">
+                      Login
                     </Link>
                   </p>
                 </CardFooter>
@@ -182,4 +200,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

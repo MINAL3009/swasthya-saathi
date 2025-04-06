@@ -1,17 +1,22 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import EmergencyAccess from "@/components/EmergencyAccess";
 import FeatureCard from "@/components/FeatureCard";
 import { Search, Bell, Book, Calendar, FileText, Shield, Smartphone, User } from "lucide-react";
 
 const Home = () => {
   const [userRole, setUserRole] = useState<"doctor" | "patient" | null>(null);
+  const navigate = useNavigate();
+  
+  const handlePortalSelect = (role: "doctor" | "patient") => {
+    setUserRole(role);
+    navigate("/login", { state: { role } });
+  };
   
   return (
     <div className="flex flex-col min-h-screen">
@@ -35,14 +40,6 @@ const Home = () => {
                       Get Started
                     </Button>
                   </Link>
-                  <Link to="/features">
-                    <Button variant="outline" size="lg">
-                      Learn More
-                    </Button>
-                  </Link>
-                </div>
-                <div className="flex justify-start mt-6">
-                  <EmergencyAccess />
                 </div>
               </div>
               <div className="relative flex items-center justify-center">
@@ -61,11 +58,8 @@ const Home = () => {
                               <p className="text-sm text-gray-500">Access your patient records, appointments, and AI analysis tools.</p>
                             </div>
                             <div className="grid gap-2">
-                              <Button className="w-full bg-medical-blue" onClick={() => setUserRole("doctor")}>
+                              <Button className="w-full bg-medical-blue" onClick={() => handlePortalSelect("doctor")}>
                                 Login as Doctor
-                              </Button>
-                              <Button variant="outline" className="w-full">
-                                View Demo
                               </Button>
                             </div>
                           </CardContent>
@@ -79,11 +73,8 @@ const Home = () => {
                               <p className="text-sm text-gray-500">Manage your medical records, appointments, and treatment plans.</p>
                             </div>
                             <div className="grid gap-2">
-                              <Button className="w-full bg-medical-teal" onClick={() => setUserRole("patient")}>
+                              <Button className="w-full bg-medical-teal" onClick={() => handlePortalSelect("patient")}>
                                 Login as Patient
-                              </Button>
-                              <Button variant="outline" className="w-full">
-                                View Demo
                               </Button>
                             </div>
                           </CardContent>
@@ -154,7 +145,7 @@ const Home = () => {
                   Trusted by Healthcare Professionals
                 </h2>
                 <p className="max-w-[700px] text-gray-500 md:text-xl">
-                  See what doctors and patients are saying about MedInsight AI.
+                  See what doctors and patients are saying about Swasthya Saathi.
                 </p>
               </div>
             </div>
@@ -219,7 +210,7 @@ const Home = () => {
                 Ready to Revolutionize Your Healthcare Experience?
               </h2>
               <p className="text-medical-light md:text-xl">
-                Join thousands of healthcare professionals and patients already benefiting from MedInsight AI.
+                Join thousands of healthcare professionals and patients already benefiting from Swasthya Saathi.
               </p>
               <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <Link to="/register">
